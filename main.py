@@ -1,7 +1,6 @@
 import tkinter as tk
 import random
 from PIL import ImageTk, Image
-import asyncio 
 
 tk.sys.setrecursionlimit(10000)
 
@@ -16,28 +15,35 @@ class mainMenu:
     def __init__(self, master):
         self.master = master
         self.frame = tk.Frame(self.master)
-        self.frame.pack() 
+        self.frame.pack()
+        self.backgroundImage = ImageTk.PhotoImage((Image.open('grass.jpg')))
 
-        tk.Label(self.frame, bg = 'green', text = 'SnakeSweeper', font = ('Comic Sans MS', 30), fg = 'yellow').grid(row = 0, columnspan = 5,  sticky = 'ew')
-        tk.Label(self.frame, text = 'Enter Game Options:', font = ('Comic Sans MS', 12, 'bold'), fg = 'purple', pady = 10).grid(row = 1, column = 0, sticky = 'w')
-        tk.Label(self.frame, text = "Number of Columns:", font = ('Comic Sans MS', 10, 'bold'), fg = 'blue', pady = 10).grid(row = 2, column = 0, sticky = 'w')
-        tk.Label(self.frame, text = "Number of Rows:", font = ('Comic Sans MS', 10, 'bold'), fg = 'blue', pady = 10).grid(row = 3, column = 0, sticky = 'w')
-        tk.Label(self.frame, text = "Number of Snakes:", font = ('Comic Sans MS', 10, 'bold'), fg = 'blue', pady = 10).grid(row = 4, column = 0, sticky = 'w')
+        background_label = tk.Label(self.frame, image = self.backgroundImage)
+        background_label.place(x=0, y=0, relwidth=1, relheight=1)
+
+        tk.Label(self.frame, bg = 'green', text = 'SnakeSweeper', font = ('Comic Sans MS', 20), fg = 'yellow').grid(row = 0, columnspan = 2,  sticky = 'ew')
+        tk.Label(self.frame, text = 'Enter Game Options', font = ('Arial', 12, 'bold'), fg = 'yellow', pady = 10, bg = 'green').grid(row = 1, columnspan = 2, pady = 10)
+        tk.Label(self.frame, text = "Number of Columns:", font = ('Comic Sans MS', 10, 'bold'), fg = 'yellow', pady = 10, bg = 'green').grid(row = 2, column = 0, sticky = 'w')
+        tk.Label(self.frame, text = "Number of Rows:", font = ('Comic Sans MS', 10, 'bold'), fg = 'yellow', pady = 10, bg = 'green').grid(row = 3, column = 0, sticky = 'w')
+        tk.Label(self.frame, text = "Number of Snakes:", font = ('Comic Sans MS', 10, 'bold'), fg = 'yellow', pady = 10, bg = 'green').grid(row = 4, column = 0, sticky = 'w')
 
         columns = tk.IntVar()
+        columns.set(10)
         rows = tk.IntVar()
+        rows.set(10)
         snakes = tk.IntVar()
+        snakes.set(20)
 
-        e1 = tk.Entry(self.frame, textvariable = columns)
-        e2 = tk.Entry(self.frame, textvariable = rows)
-        e3 = tk.Entry(self.frame, textvariable = snakes)
+        e1 = tk.Entry(self.frame, textvariable = columns, width = 17, justify = 'center')
+        e2 = tk.Entry(self.frame, textvariable = rows, width = 17, justify = 'center')
+        e3 = tk.Entry(self.frame, textvariable = snakes, width = 17, justify = 'center')
 
         e1.grid(row = 2, column = 1)
         e2.grid(row = 3, column = 1)
         e3.grid(row = 4, column = 1)
 
         tk.Button(self.frame, text='Quit', command = self.master.quit).grid(row=5, column=1, sticky='W', pady=4)
-        tk.Button(self.frame, text='Start', command = lambda: self.loadGame(columns = int(e1.get()), rows = int(e2.get()), snakes = int(e3.get()))).grid(row=5, column=2, sticky='w', pady=4)
+        tk.Button(self.frame, text='Start', command = lambda: self.loadGame(columns = int(e1.get()), rows = int(e2.get()), snakes = int(e3.get()))).grid(row = 5, column = 1, sticky = 'E')
 
     def loadGame(self, columns, rows, snakes):
         self.gameWindow = tk.Toplevel(self.master)
@@ -52,7 +58,6 @@ class gameFrame:
         self.rows = rows
         self.columns = columns
         self.nonSnakeCount = (self.columns*self.rows) - self.snakes
-        print(self.nonSnakeCount)
         self.grid = [[Cell() for j in range(columns)] for i in range(rows)]
         self.gameCanvasBoard = tk.Canvas(self.frame, width = columns*20 + 1, height = rows*20 + 1)
         self.gameCanvasBoard.pack()
@@ -119,7 +124,6 @@ class gameFrame:
             self.createTable()
         elif(self.nonSnakeCount == 0):
             self.gameOver(1)
-        print(self.nonSnakeCount)
     
     def gameOver(self, flag = 0):
         for i in range(self.rows):
