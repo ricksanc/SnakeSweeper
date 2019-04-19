@@ -52,6 +52,7 @@ class mainMenu:
 class gameFrame:
     def __init__(self, master, rows = 0, columns = 0, snakes = 0):
         self.master = master
+        self.master.resizable(False, False)
         self.frame = tk.Frame(self.master, height = 20*rows + 4, width = columns*20 + 4)
         self.frame.pack()
         self.snakes = snakes
@@ -142,6 +143,7 @@ class gameFrame:
 class gameOverWindow:
     def __init__(self, master, root, message):
         self.master = master
+        self.master.resizable(False, False)
         self.root = root
         self.frame = tk.Frame(self.master)
         self.frame.pack()
@@ -156,6 +158,7 @@ def main():
     root = tk.Tk(className = 'SnakeSweeper')
     root.title('SnakeSweeper')
     root.call('wm', 'iconphoto', root._w, tk.PhotoImage(file='i.png'))
+    root.resizable(False, False)
     app = mainMenu(root)
     root.mainloop()
 
