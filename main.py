@@ -11,6 +11,7 @@ class Cell:
         self.snake = False
         self.revealed = False
         self.neighborSnakes = 0
+        self.flag = -1
 
 
 class mainMenu:
@@ -125,13 +126,15 @@ class gameFrame:
         self.gameOverState = 0
         self.rows = rows
         self.columns = columns
+        self.flagCount = 0
         self.nonSnakeCount = (self.columns * self.rows) - self.snakes
         self.grid = [[Cell() for j in range(columns)] for i in range(rows)]
         self.gameCanvasBoard = tk.Canvas(
             self.frame, width=columns * 20 + 1, height=rows * 20 + 1
         )
         self.gameCanvasBoard.pack()
-        self.gameCanvasBoard.bind("<Button-1>", self.onClick)
+        self.gameCanvasBoard.bind("<Button-1>", self.onLeftClick)
+        self.gameCanvasBoard.bind("<Button-3>", self.onRightClick)
         self.snakeCount = 0
         self.snakeImage = ImageTk.PhotoImage(
                                     Image.open("i.png").resize((18, 18))
@@ -139,13 +142,22 @@ class gameFrame:
         self.grassImage = ImageTk.PhotoImage(
                                     Image.open("grass.jpg").resize((18, 18))
                                 )
+        self.flagImage = ImageTk.PhotoImage(
+                                    Image.open("flag.png").resize((18, 18))
+                                )
         self.timerLabel = tk.Label(
                                 self.master,
                                 text="",
                                 fg='red',
                                 bg='yellow',
                             )
-        self.timerLabel.pack(anchor='e')
+        self.flagCountLabel = tk.Label(
+                                self.master,
+                                text="flags: "+str(self.flagCount),
+                                fg='red',
+                                bg='yellow',
+                            )
+        self.timerLabel.pack(anchor='e', side=tk.RIGHT)
         self.timeStarted = time.time()
         self.timer()
 
@@ -220,12 +232,26 @@ class gameFrame:
                             fill="white",
                         )
                 else:
+                    if (self.grid[i][j].flag == 1):
+                        self.gameCanvasBoard.create_image(
+                        j * 20 + 11,
+                        i * 20 + 11,
+                        image=self.flagImage
+                    )
                     self.gameCanvasBoard.create_rectangle(
                             j * 20 + 1,
                             i * 20 + 1,
                             j * 20 + 21,
                             i * 20 + 21
                         )
+        self.flagCountLabel.destroy()
+        self.flagCountLabel = tk.Label(
+                                self.master,
+                                text="flags: "+str(self.flagCount),
+                                fg='red',
+                                bg='yellow',
+                            )
+        self.flagCountLabel.pack(side=tk.LEFT)
 
     def ZeroNeighbor(self, i, j):
         for a in range(-1, 2):
@@ -246,8 +272,11 @@ class gameFrame:
                             self.grid[i + a][j + b].revealed = True
                             self.nonSnakeCount -= 1
 
-    def onClick(self, event):
+    def onLeftClick(self, event):
         x, y = event.x - 1, event.y - 1
+        if self.grid[int(y / 20)][int(x / 20)].flag == 1:
+            self.grid[int(y / 20)][int(x / 20)].flag = -1
+            self.flagCount -= 1
         if (
             not self.grid[int(y / 20)][int(x / 20)].revealed and
             not self.grid[int(y / 20)][int(x / 20)].snake
@@ -265,6 +294,13 @@ class gameFrame:
             self.createTable()
         elif self.nonSnakeCount == 0:
             self.gameOver(1)
+
+    def onRightClick(self, event):
+        x, y = event.x - 1, event.y - 1
+        if (not self.grid[int(y / 20)][int(x / 20)].revealed):
+            self.grid[int(y / 20)][int(x / 20)].flag *= -1
+            self.flagCount += 1
+            self.createTable()
 
     def gameOver(self, flag=0):
         self.gameOverState = 1
