@@ -1,6 +1,7 @@
 import tkinter as tk
 import random
 from PIL import ImageTk, Image
+import time
 
 tk.sys.setrecursionlimit(10000)
 
@@ -121,6 +122,7 @@ class gameFrame:
                     )
         self.frame.pack()
         self.snakes = snakes
+        self.gameOverState = 0
         self.rows = rows
         self.columns = columns
         self.nonSnakeCount = (self.columns * self.rows) - self.snakes
@@ -137,6 +139,15 @@ class gameFrame:
         self.grassImage = ImageTk.PhotoImage(
                                     Image.open("grass.jpg").resize((18, 18))
                                 )
+        self.timerLabel = tk.Label(
+                                self.master,
+                                text="",
+                                fg='red',
+                                bg='yellow',
+                            )
+        self.timerLabel.pack(anchor='e')
+        self.timeStarted = time.time()
+        self.timer()
 
         while self.snakeCount != snakes:
             randomCell = self.grid[random.randrange(0, rows)][
@@ -160,6 +171,18 @@ class gameFrame:
                                 if self.grid[i + a][j + b].snake:
                                     self.grid[i][j].neighborSnakes += 1
         self.createTable()
+
+    def timer(self):
+        if self.gameOverState == 0:
+            timeNow = time.time()
+            self.timeElapsed = timeNow - self.timeStarted
+            self.timerLabel.configure(
+                                text=time.strftime(
+                                            "%H:%M:%S",
+                                            time.gmtime(self.timeElapsed),
+                                        )
+                                )
+            self.master.after(1000, self.timer)
 
     def createTable(self):
         for i in range(self.rows):
@@ -244,6 +267,7 @@ class gameFrame:
             self.gameOver(1)
 
     def gameOver(self, flag=0):
+        self.gameOverState = 1
         for i in range(self.rows):
             for j in range(self.columns):
                 if self.grid[i][j].snake:
