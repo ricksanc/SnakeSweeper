@@ -232,17 +232,18 @@ class gameFrame:
                             fill="white",
                         )
                 else:
-                    if (self.grid[i][j].flag == 1):
-                        self.gameCanvasBoard.create_image(
-                        j * 20 + 11,
-                        i * 20 + 11,
-                        image=self.flagImage
-                    )
                     self.gameCanvasBoard.create_rectangle(
                             j * 20 + 1,
                             i * 20 + 1,
                             j * 20 + 21,
-                            i * 20 + 21
+                            i * 20 + 21,
+                            fill='white'
+                        )
+                    if self.grid[i][j].flag == 1:
+                        self.gameCanvasBoard.create_image(
+                            j * 20 + 11,
+                            i * 20 + 11,
+                            image=self.flagImage
                         )
         self.flagCountLabel.destroy()
         self.flagCountLabel = tk.Label(
@@ -298,8 +299,12 @@ class gameFrame:
     def onRightClick(self, event):
         x, y = event.x - 1, event.y - 1
         if (not self.grid[int(y / 20)][int(x / 20)].revealed):
-            self.grid[int(y / 20)][int(x / 20)].flag *= -1
-            self.flagCount += 1
+            if (self.grid[int(y / 20)][int(x / 20)].flag == -1):
+                self.grid[int(y / 20)][int(x / 20)].flag = 1
+                self.flagCount += 1
+            elif (self.grid[int(y / 20)][int(x / 20)].flag == 1):
+                self.grid[int(y / 20)][int(x / 20)].flag = -1
+                self.flagCount -= 1
             self.createTable()
 
     def gameOver(self, flag=0):
