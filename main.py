@@ -69,17 +69,34 @@ class mainMenu:
         snakes = tk.IntVar()
         snakes.set(20)
 
-        e1 = tk.Entry(self.frame, textvariable=columns, width=17, justify="center")
-        e2 = tk.Entry(self.frame, textvariable=rows, width=17, justify="center")
-        e3 = tk.Entry(self.frame, textvariable=snakes, width=17, justify="center")
+        e1 = tk.Entry(
+                self.frame,
+                textvariable=columns,
+                width=17,
+                justify="center",
+            )
+        e2 = tk.Entry(
+                self.frame,
+                textvariable=rows,
+                width=17,
+                justify="center",
+            )
+        e3 = tk.Entry(
+                self.frame,
+                textvariable=snakes,
+                width=17,
+                justify="center",
+            )
 
         e1.grid(row=2, column=1)
         e2.grid(row=3, column=1)
         e3.grid(row=4, column=1)
 
-        tk.Button(self.frame, text="Quit", command=self.master.quit).grid(
-            row=5, column=1, sticky="W", pady=4
-        )
+        tk.Button(
+            self.frame,
+            text="Quit",
+            command=self.master.quit,
+        ).grid(row=5, column=1, sticky="W", pady=4)
         tk.Button(
             self.frame,
             text="Start",
@@ -97,7 +114,11 @@ class gameFrame:
     def __init__(self, master, rows=0, columns=0, snakes=0):
         self.master = master
         self.master.resizable(False, False)
-        self.frame = tk.Frame(self.master, height=20 * rows + 4, width=columns * 20 + 4)
+        self.frame = tk.Frame(
+                self.master,
+                height=20 * rows + 4,
+                width=columns * 20 + 4
+            )
         self.frame.pack()
         self.snakes = snakes
         self.rows = rows
@@ -110,8 +131,12 @@ class gameFrame:
         self.gameCanvasBoard.pack()
         self.gameCanvasBoard.bind("<Button-1>", self.onClick)
         self.snakeCount = 0
-        self.snakeImage = ImageTk.PhotoImage((Image.open("i.png")).resize((18, 18)))
-        self.grassImage = ImageTk.PhotoImage((Image.open("grass.jpg")).resize((18, 18)))
+        self.snakeImage = ImageTk.PhotoImage(
+                                    Image.open("i.png").resize((18, 18))
+                                )
+        self.grassImage = ImageTk.PhotoImage(
+                                    Image.open("grass.jpg").resize((18, 18))
+                                )
 
         while self.snakeCount != snakes:
             randomCell = self.grid[random.randrange(0, rows)][
@@ -129,10 +154,8 @@ class gameFrame:
                     for a in range(-1, 2):
                         for b in range(-1, 2):
                             if (
-                                i + a > -1
-                                and i + a < rows
-                                and j + b > -1
-                                and j + b < columns
+                                i + a > -1 and i + a < rows and
+                                j + b > -1 and j + b < columns
                             ):
                                 if self.grid[i + a][j + b].snake:
                                     self.grid[i][j].neighborSnakes += 1
@@ -143,44 +166,55 @@ class gameFrame:
             for j in range(self.columns):
                 if self.grid[i][j].revealed and self.grid[i][j].snake:
                     self.gameCanvasBoard.create_rectangle(
-                        (j) * 20 + 1, (i) * 20 + 1, (j) * 20 + 21, (i) * 20 + 21
+                        j * 20 + 1,
+                        i * 20 + 1,
+                        j * 20 + 21,
+                        i * 20 + 21
                     )
                     self.gameCanvasBoard.create_image(
-                        (j) * 20 + 11, (i) * 20 + 11, image=self.snakeImage
+                        j * 20 + 11,
+                        i * 20 + 11,
+                        image=self.snakeImage
                     )
                 elif self.grid[i][j].revealed and not self.grid[i][j].snake:
                     self.gameCanvasBoard.create_image(
-                        (j) * 20 + 11, (i) * 20 + 11, image=self.grassImage
+                        j * 20 + 11,
+                        i * 20 + 11,
+                        image=self.grassImage
                     )
                     self.gameCanvasBoard.create_rectangle(
-                        (j) * 20 + 1, (i) * 20 + 1, (j) * 20 + 21, (i) * 20 + 21
+                        j * 20 + 1,
+                        i * 20 + 1,
+                        j * 20 + 21,
+                        i * 20 + 21
                     )
                     if self.grid[i][j].neighborSnakes is not 0:
                         self.gameCanvasBoard.create_text(
-                            (j) * 20 + 11,
-                            (i) * 20 + 11,
+                            j * 20 + 11,
+                            i * 20 + 11,
                             text=self.grid[i][j].neighborSnakes,
                             font=("Comic Sans MS", 11, "bold"),
                             fill="white",
                         )
                 else:
                     self.gameCanvasBoard.create_rectangle(
-                        (j) * 20 + 1, (i) * 20 + 1, (j) * 20 + 21, (i) * 20 + 21
-                    )
+                            j * 20 + 1,
+                            i * 20 + 1,
+                            j * 20 + 21,
+                            i * 20 + 21
+                        )
 
     def ZeroNeighbor(self, i, j):
         for a in range(-1, 2):
             for b in range(-1, 2):
                 if (
-                    i + a > -1
-                    and i + a < self.rows
-                    and j + b > -1
-                    and j + b < self.columns
+                    i + a > -1 and i + a < self.rows and
+                    j + b > -1 and j + b < self.columns
                 ):
                     if not self.grid[i + a][j + b].snake:
                         if (
-                            self.grid[i + a][j + b].neighborSnakes == 0
-                            and not self.grid[i + a][j + b].revealed
+                            self.grid[i + a][j + b].neighborSnakes == 0 and
+                            not self.grid[i + a][j + b].revealed
                         ):
                             self.grid[i + a][j + b].revealed = True
                             self.nonSnakeCount -= 1
@@ -192,15 +226,15 @@ class gameFrame:
     def onClick(self, event):
         x, y = event.x - 1, event.y - 1
         if (
-            not self.grid[int(y / 20)][int(x / 20)].revealed
-            and not self.grid[int(y / 20)][int(x / 20)].snake
+            not self.grid[int(y / 20)][int(x / 20)].revealed and
+            not self.grid[int(y / 20)][int(x / 20)].snake
         ):
             self.nonSnakeCount -= 1
         self.grid[int(y / 20)][int(x / 20)].revealed = True
         if self.nonSnakeCount > 0:
             if (
-                self.grid[int(y / 20)][int(x / 20)].neighborSnakes == 0
-                and not self.grid[int(y / 20)][int(x / 20)].snake
+                self.grid[int(y / 20)][int(x / 20)].neighborSnakes == 0 and
+                not self.grid[int(y / 20)][int(x / 20)].snake
             ):
                 self.ZeroNeighbor(int(y / 20), int(x / 20))
             elif self.grid[int(y / 20)][int(x / 20)].snake:
