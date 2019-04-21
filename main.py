@@ -115,10 +115,10 @@ class gameFrame:
         self.master = master
         self.master.resizable(False, False)
         self.frame = tk.Frame(
-                self.master,
-                height=20 * rows + 4,
-                width=columns * 20 + 4
-            )
+                        self.master,
+                        height=20 * rows + 4,
+                        width=columns * 20 + 4
+                    )
         self.frame.pack()
         self.snakes = snakes
         self.rows = rows
