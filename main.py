@@ -1,5 +1,6 @@
 import tkinter as tk
 import random
+import tkinter.ttk as ttk
 from PIL import ImageTk, Image
 import time
 
@@ -160,6 +161,12 @@ class gameFrame:
         self.timerLabel.pack(anchor='e', side=tk.RIGHT)
         self.timeStarted = time.time()
         self.timer()
+        self.progress = ttk.Progressbar(
+                                        self.frame, length=20 * columns + 4,
+                                        mode="determinate",
+                                        maximum=self.nonSnakeCount,
+                                    )
+        self.progress.pack()
 
         while self.snakeCount != snakes:
             randomCell = self.grid[random.randrange(0, rows)][
@@ -268,10 +275,12 @@ class gameFrame:
                         ):
                             self.grid[i + a][j + b].revealed = True
                             self.nonSnakeCount -= 1
+                            self.progress.step(1)
                             self.ZeroNeighbor(i + a, j + b)
                         elif not self.grid[i + a][j + b].revealed:
                             self.grid[i + a][j + b].revealed = True
                             self.nonSnakeCount -= 1
+                            self.progress.step(1)
 
     def onLeftClick(self, event):
         x, y = event.x - 1, event.y - 1
@@ -283,6 +292,7 @@ class gameFrame:
             not self.grid[int(y / 20)][int(x / 20)].snake
         ):
             self.nonSnakeCount -= 1
+            self.progress.step(1)
         self.grid[int(y / 20)][int(x / 20)].revealed = True
         if self.nonSnakeCount > 0:
             if (
@@ -295,6 +305,7 @@ class gameFrame:
             self.createTable()
         elif self.nonSnakeCount == 0:
             self.gameOver(1)
+        #self.progress.configure(value=self.nonSnakeCount)
 
     def onRightClick(self, event):
         x, y = event.x - 1, event.y - 1
